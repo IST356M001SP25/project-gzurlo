@@ -1,7 +1,7 @@
 # Reflection
 
-Student Name:  name
-Student Email:  email
+Student Name:  Gianluca Zurlo
+Student Email:  gzurlo@syr.edu
 
 ## Instructions
 
@@ -22,4 +22,15 @@ Examples:
 **Best Reflection** "I learned when to use while vs for loops. While loops are for sentiel-controlled values (waiting for a condition to occur), vs for loops are for iterating over collections of fixed values."
 
 `--- Reflection Below This Line ---`
+## What I Learned
+- How to fetch data from APIs.
+- Data cleaning with Pandas.
+- Building interactive dashboards with Streamlit.
 
+## Challenges
+- Handling API rate limits.
+- Making visualizations responsive.
+
+## Future Improvements
+- Add player stats.
+- Include match predictions.
