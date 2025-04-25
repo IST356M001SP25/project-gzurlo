@@ -1,5 +1,7 @@
 import pytest
-from code.extract import fetch_seriea_standings
+from code.extract import fetch_seriea_standings, save_raw_data
+import pandas as pd
+import os
 
 def test_fetch_standings(monkeypatch):
     """Mock API response to test standings fetch"""
