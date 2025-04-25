@@ -4,26 +4,40 @@ import os
 
 def fetch_seriea_standings(api_key):
     """Fetch current Serie A standings from Football-Data API"""
-    url = f"https://api.football-data.org/v4/competitions/SA/standings"
+    url = "https://api.football-data.org/v4/competitions/SA/standings"
     headers = {"X-Auth-Token": api_key}
     
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raises exception for 4XX/5XX errors
         data = response.json()
         standings = data["standings"][0]["table"]
         df = pd.DataFrame(standings)
         df["team"] = df["team"].apply(lambda x: x["name"])
-        return df
-    else:
-        raise Exception(f"API Error: {response.status_code}")
+        return df[["position", "team", "playedGames", "won", "draw", "lost", "points", "goalsFor", "goalsAgainst", "goalDifference"]]
+    except Exception as e:
+        raise Exception(f"Failed to fetch standings: {str(e)}")
 
 def save_raw_data(df, filename):
-    """Save raw data to cache"""
-    os.makedirs("cache/raw", exist_ok=True)
-    df.to_csv(f"cache/raw/{filename}.csv", index=False)
+    """Save raw data to cache with proper directory handling"""
+    cache_dir = "cache/raw"
+    
+    # Remove any existing file named 'raw'
+    if os.path.exists(cache_dir) and not os.path.isdir(cache_dir):
+        os.remove(cache_dir)
+    
+    # Create directory (including parent directories if needed)
+    os.makedirs(cache_dir, exist_ok=True)
+    
+    # Save the file
+    df.to_csv(f"{cache_dir}/{filename}.csv", index=False)
 
 if __name__ == "__main__":
-    API_KEY = "69866da051d3469cada34de600c6fb3f"  # Get from https://www.football-data.org/
-    standings = fetch_seriea_standings(API_KEY)
-    save_raw_data(standings, "seriea_standings")
-    print("Data fetched and saved!")
+    try:
+        API_KEY = "69866da051d3469cada34de600c6fb3f"  # Replace with your actual API key
+        standings = fetch_seriea_standings(API_KEY)
+        save_raw_data(standings, "seriea_standings")
+        print("✅ Data successfully fetched and saved to cache/raw/seriea_standings.csv")
+        print(standings.head())
+    except Exception as e:
+        print(f"❌ Error: {str(e)}")
